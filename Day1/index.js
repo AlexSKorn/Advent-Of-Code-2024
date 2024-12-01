@@ -1,28 +1,53 @@
 import fs from "fs";
 
-function readInputFile() {
-  let left = [];
-  let right = [];
-  const data = fs.readFileSync("./input.txt", "utf8");
-  const dataArray = data.trim().split("\n");
-  for (const num of dataArray) {
-    const line = num.split("   ");
-    left.push(parseInt(line[0]));
-    right.push(parseInt(line[1]));
+function parseNumbers(line) {
+  const [first, second] = line.split(/\s+/);
+  const firstNum = parseInt(first);
+  const secondNum = parseInt(second);
+
+  if (isNaN(firstNum) || isNaN(secondNum)) {
+    throw new Error(`Invalid number in line: ${line}`);
   }
-  left.sort((a, b) => b - a);
-  right.sort((a, b) => b - a);
-  return [left, right];
+
+  return [firstNum, secondNum];
+}
+
+function readInputFile() {
+  try {
+    const data = fs.readFileSync("./input.txt", "utf8");
+    const lines = data.trim().split("\n");
+
+    const firstNumbers = [];
+    const secondNumbers = [];
+
+    for (const line of lines) {
+      const [first, second] = parseNumbers(line);
+      firstNumbers.push(first);
+      secondNumbers.push(second);
+    }
+
+    return {
+      firstNumbers: firstNumbers.sort((a, b) => b - a),
+      secondNumbers: secondNumbers.sort((a, b) => b - a),
+    };
+  } catch (error) {
+    console.error("Error processing input file:", error);
+    process.exit(1);
+  }
+}
+
+function calculateTotal(firstNumbers, secondNumbers) {
+  return firstNumbers.reduce(
+    (sum, curr, index) => sum + Math.abs(curr - secondNumbers[index]),
+    0,
+  );
 }
 
 function solveDayOneProblem() {
-  const [left, right] = readInputFile();
-  let total = 0;
-  //Get the absolute value between the two arrays, add everything up
-  for (let i = 0; i < left.length; i++) {
-    total += Math.abs(left[i] - right[i]);
-  }
+  const { firstNumbers, secondNumbers } = readInputFile();
+  const total = calculateTotal(firstNumbers, secondNumbers);
   console.log(total);
+  return total;
 }
 
 solveDayOneProblem();
