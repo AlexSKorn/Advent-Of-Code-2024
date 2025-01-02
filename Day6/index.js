@@ -39,6 +39,10 @@ function solveDaySix() {
 }
 
 function findStart(grid) {
+  if (!grid || !grid.length) {
+    throw new Error("Invalid grid input");
+  }
+
   for (let i = 0; i < grid.length; i++) {
     for (let j = 0; j < grid[i].length; j++) {
       if (grid[i][j] === ROBOT) {
