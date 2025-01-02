@@ -1,9 +1,11 @@
 import fs from "fs";
 
-const ROBOT = "^";
-const WALL = "#";
-const EMPTY = ".";
-const VISITED = "X";
+const SYMBOLS = {
+  ROBOT: "^",
+  WALL: "#",
+  EMPTY: ".",
+  VISITED: "X",
+};
 
 const DIRECTIONS = {
   up: "up",
@@ -45,7 +47,7 @@ function findStart(grid) {
 
   for (let i = 0; i < grid.length; i++) {
     for (let j = 0; j < grid[i].length; j++) {
-      if (grid[i][j] === ROBOT) {
+      if (grid[i][j] === SYMBOLS.ROBOT) {
         return [i, j];
       }
     }
@@ -73,7 +75,7 @@ function findRoute(grid) {
     }
 
     // If we hit a wall, change direction but stay in same position
-    if (grid[newX][newY] === WALL) {
+    if (grid[newX][newY] === SYMBOLS.WALL) {
       currDirection = changeDirection(currDirection);
     } else {
       // Move to new position
