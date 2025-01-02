@@ -12,12 +12,30 @@ const DIRECTIONS = {
   right: "right",
 };
 
+const DIRECTION_CHANGES = {
+  [DIRECTIONS.up]: DIRECTIONS.right,
+  [DIRECTIONS.right]: DIRECTIONS.down,
+  [DIRECTIONS.down]: DIRECTIONS.left,
+  [DIRECTIONS.left]: DIRECTIONS.up,
+};
+
+const MOVES = {
+  [DIRECTIONS.up]: (x, y) => [x - 1, y],
+  [DIRECTIONS.right]: (x, y) => [x, y + 1],
+  [DIRECTIONS.down]: (x, y) => [x + 1, y],
+  [DIRECTIONS.left]: (x, y) => [x, y - 1],
+};
+
 function solveDaySix() {
-  console.log("this is solving day 6");
-  const grid = readFile();
-  const spacesVisitied = findRoute(grid);
-  console.log(spacesVisitied);
-  return spacesVisitied;
+  try {
+    const grid = readFile();
+    const spacesVisited = findRoute(grid);
+    console.log(`Spaces visited: ${spacesVisited}`);
+    return spacesVisited;
+  } catch (error) {
+    console.error("Error solving Day 6:", error);
+    throw error;
+  }
 }
 
 function findStart(grid) {
@@ -62,46 +80,18 @@ function findRoute(grid) {
 }
 
 function changeDirection(currDirection) {
-  switch (currDirection) {
-    case DIRECTIONS.up:
-      return DIRECTIONS.right;
-    case DIRECTIONS.right:
-      return DIRECTIONS.down;
-    case DIRECTIONS.down:
-      return DIRECTIONS.left;
-    case DIRECTIONS.left:
-      return DIRECTIONS.up;
-  }
+  return DIRECTION_CHANGES[currDirection];
 }
 
 function moveRobot(currDirection, x, y) {
-  switch (currDirection) {
-    case DIRECTIONS.up:
-      return [x - 1, y];
-    case DIRECTIONS.right:
-      return [x, y + 1];
-    case DIRECTIONS.down:
-      return [x + 1, y];
-    case DIRECTIONS.left:
-      return [x, y - 1];
-  }
+  return MOVES[currDirection](x, y);
 }
 
 function readFile() {
-  const data = fs.readFileSync("./input.txt", "utf8");
-  const rowArray = [];
-
-  data.split("\n").forEach((line) => {
-    let temp = [];
-    line.split("").forEach((char) => {
-      temp.push(char);
-    });
-    rowArray.push(temp);
-  });
-
-  // console.log(rowArray);
-
-  return rowArray;
+  return fs
+    .readFileSync("./input.txt", "utf8")
+    .split("\n")
+    .map((line) => line.split(""));
 }
 
 solveDaySix();
